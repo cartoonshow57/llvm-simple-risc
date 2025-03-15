@@ -494,6 +494,9 @@ set(LLVM_ALL_TARGETS
   Lanai
   LoongArch
   Mips
+#@s nova-all-targets-cmake
+  Nova
+#- nova-all-targets-cmake
   MSP430
   NVPTX
   PowerPC
@@ -513,6 +516,7 @@ set(LLVM_ALL_EXPERIMENTAL_TARGETS
   DirectX
   M68k
   Xtensa
+  # MipsNova
 )
 
 # List of targets with JIT support:

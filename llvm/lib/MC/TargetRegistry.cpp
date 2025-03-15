@@ -16,6 +16,8 @@
 #include "llvm/MC/MCObjectWriter.h"
 #include "llvm/Support/raw_ostream.h"
 #include <cassert>
+#include <iostream>
+#include <ostream>
 #include <vector>
 using namespace llvm;
 

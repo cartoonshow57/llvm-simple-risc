@@ -16,7 +16,9 @@
 // this file.  Undefine them here.
 #undef NetBSD
 #undef mips
+//@s something
 #undef sparc
+//- something
 
 namespace llvm {
 
@@ -66,6 +68,9 @@ public:
     mips64,         // MIPS64: mips64, mips64r6, mipsn32, mipsn32r6
     mips64el,       // MIPS64EL: mips64el, mips64r6el, mipsn32el, mipsn32r6el
     msp430,         // MSP430: msp430
+    //@s triple1
+    mipsnova,       // MipsNova: basically same as mips
+    //- triple1
     ppc,            // PPC: powerpc
     ppcle,          // PPCLE: powerpc (little endian)
     ppc64,          // PPC64: powerpc64, ppu
@@ -107,6 +112,7 @@ public:
     ve,             // NEC SX-Aurora Vector Engine
     LastArchType = ve
   };
+//@s sub-arch mark
   enum SubArchType {
     NoSubArch,
 
@@ -114,6 +120,7 @@ public:
     ARMSubArch_v9_5a,
     ARMSubArch_v9_4a,
     ARMSubArch_v9_3a,
+//- sub-arch
     ARMSubArch_v9_2a,
     ARMSubArch_v9_1a,
     ARMSubArch_v9,
@@ -1276,4 +1283,6 @@ public:
 } // End llvm namespace
 
 
+//@s snippet-after removed
 #endif
+//- snippet-after

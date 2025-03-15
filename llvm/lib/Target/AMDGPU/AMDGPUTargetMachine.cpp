@@ -153,9 +153,12 @@ static bool onlyAllocateWWMRegs(const TargetRegisterInfo &TRI,
                                 const Register Reg) {
   const SIMachineFunctionInfo *MFI =
       MRI.getMF().getInfo<SIMachineFunctionInfo>();
+//@s inner-snip1  
+
   const TargetRegisterClass *RC = MRI.getRegClass(Reg);
   return !static_cast<const SIRegisterInfo &>(TRI).isSGPRClass(RC) &&
          MFI->checkFlag(Reg, AMDGPU::VirtRegFlag::WWM_REG);
+//- inner-snip1
 }
 
 /// -{sgpr|wwm|vgpr}-regalloc=... command line option.
@@ -165,7 +168,9 @@ static FunctionPass *useDefaultRegisterAllocator() { return nullptr; }
 /// overridden on the command line.
 static llvm::once_flag InitializeDefaultSGPRRegisterAllocatorFlag;
 static llvm::once_flag InitializeDefaultVGPRRegisterAllocatorFlag;
+//@s init
 static llvm::once_flag InitializeDefaultWWMRegisterAllocatorFlag;
+//- init
 
 static SGPRRegisterRegAlloc
 defaultSGPRRegAlloc("default",

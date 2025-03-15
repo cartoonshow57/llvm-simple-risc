@@ -1,3 +1,4 @@
+//@s new-file
 //===--- Triple.cpp - Target triple helper class --------------------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
@@ -6,6 +7,7 @@
 //
 //===----------------------------------------------------------------------===//
 
+//- new-file
 #include "llvm/TargetParser/Triple.h"
 #include "llvm/ADT/DenseMap.h"
 #include "llvm/ADT/SmallString.h"
@@ -45,12 +47,19 @@ StringRef Triple::getArchTypeName(ArchType Kind) {
   case kalimba:        return "kalimba";
   case lanai:          return "lanai";
   case loongarch32:    return "loongarch32";
+//@s other
   case loongarch64:    return "loongarch64";
+//- other
   case m68k:           return "m68k";
   case mips64:         return "mips64";
   case mips64el:       return "mips64el";
   case mips:           return "mips";
+//@s another
   case mipsel:         return "mipsel";
+//- another
+//@s get-arch-type-name
+  case mipsnova:       return "mipsnova";
+//- get-arch-type-name
   case msp430:         return "msp430";
   case nvptx64:        return "nvptx64";
   case nvptx:          return "nvptx";
@@ -437,6 +446,9 @@ Triple::ArchType Triple::getArchTypeForLLVMName(StringRef Name) {
     .Case("mipsel", mipsel)
     .Case("mips64", mips64)
     .Case("mips64el", mips64el)
+    //@s case-triple
+    .Case("mipsnova", mipsnova)
+    //- case-triple
     .Case("msp430", msp430)
     .Case("ppc64", ppc64)
     .Case("ppc32", ppc)
@@ -586,6 +598,9 @@ static Triple::ArchType parseArch(StringRef ArchName) {
                  Triple::mips)
           .Cases("mipsel", "mipsallegrexel", "mipsisa32r6el", "mipsr6el",
                  Triple::mipsel)
+          //@s parse-arch-nova
+          .Case("mipsnova", Triple::mipsnova)
+          //- parse-arch-nova
           .Cases("mips64", "mips64eb", "mipsn32", "mipsisa64r6", "mips64r6",
                  "mipsn32r6", Triple::mips64)
           .Cases("mips64el", "mipsn32el", "mipsisa64r6el", "mips64r6el",
@@ -951,6 +966,9 @@ static Triple::ObjectFormatType getDefaultFormat(const Triple &T) {
   case Triple::mips64:
   case Triple::mips64el:
   case Triple::mips:
+  //@s default-format-nova
+  // case Triple::mipsnova:
+  //- default-format-nova
   case Triple::msp430:
   case Triple::nvptx64:
   case Triple::nvptx:
@@ -1019,6 +1037,7 @@ Triple::Triple(const Twine &Str)
   // Do minimal parsing by hand here.
   SmallVector<StringRef, 4> Components;
   StringRef(Data).split(Components, '-', /*MaxSplit*/ 3);
+//@s triple2
   if (Components.size() > 0) {
     Arch = parseArch(Components[0]);
     SubArch = parseSubArch(Components[0]);
@@ -1031,6 +1050,7 @@ Triple::Triple(const Twine &Str)
           ObjectFormat = parseFormat(Components[3]);
         }
       }
+//- triple2
     } else {
       Environment =
           StringSwitch<Triple::EnvironmentType>(Components[0])
@@ -1662,6 +1682,9 @@ unsigned Triple::getArchPointerBitWidth(llvm::Triple::ArchType Arch) {
   case llvm::Triple::m68k:
   case llvm::Triple::mips:
   case llvm::Triple::mipsel:
+  //@s 32-bit-nova-ptr
+  case llvm::Triple::mipsnova:
+  //- 32-bit-nova-ptr
   case llvm::Triple::nvptx:
   case llvm::Triple::ppc:
   case llvm::Triple::ppcle:
@@ -1772,6 +1795,9 @@ Triple Triple::get32BitArchVariant() const {
   case Triple::m68k:
   case Triple::mips:
   case Triple::mipsel:
+  //@s 32bit-variant
+  case Triple::mipsnova:
+  //- 32bit-variant
   case Triple::nvptx:
   case Triple::ppc:
   case Triple::ppcle:
@@ -1834,6 +1860,9 @@ Triple Triple::get64BitArchVariant() const {
   case Triple::kalimba:
   case Triple::lanai:
   case Triple::m68k:
+  //@s 64bit-variant
+  case Triple::mipsnova:
+  //- 64bit-variant
   case Triple::msp430:
   case Triple::r600:
   case Triple::shave:
