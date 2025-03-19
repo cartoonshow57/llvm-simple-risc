@@ -37,6 +37,7 @@ class MCRegister {
 public:
   constexpr MCRegister(unsigned Val = 0) : Reg(Val) {}
 
+  //@s mc-register mark
   // Register numbers can represent physical registers, virtual registers, and
   // sometimes stack slots. The unsigned values are divided into these ranges:
   //
@@ -52,6 +53,7 @@ public:
   static constexpr unsigned NoRegister = 0u;
   static constexpr unsigned FirstPhysicalReg = 1u;
   static constexpr unsigned LastPhysicalReg = (1u << 30) - 1;
+  //- mc-register
 
   /// Return true if the specified register number is in
   /// the physical register namespace.
