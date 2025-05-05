@@ -681,7 +681,7 @@ public:
   //===--------------------------------------------------------------------===//
   //  Accessors
   //
-
+//@s sdnode-opcode mark
   /// Return the SelectionDAG opcode value for this node. For
   /// pre-isel nodes (those for which isMachineOpcode returns false), these
   /// are the opcode values in the ISD and <target>ISD namespaces. For
@@ -691,7 +691,7 @@ public:
   /// Test if this node has a target-specific opcode (in the
   /// \<target\>ISD namespace).
   bool isTargetOpcode() const { return NodeType >= ISD::BUILTIN_OP_END; }
-
+//- sdnode-opcode
   /// Return true if the type of the node type undefined.
   bool isUndef() const { return NodeType == ISD::UNDEF; }
 

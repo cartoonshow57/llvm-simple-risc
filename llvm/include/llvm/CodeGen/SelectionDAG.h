@@ -214,6 +214,7 @@ public:
 
 void checkForCycles(const SelectionDAG *DAG, bool force = false);
 
+//@s sel-dag mark
 /// This is used to represent a portion of an LLVM function in a low-level
 /// Data Dependence DAG representation suitable for instruction selection.
 /// This DAG is constructed as the first step of instruction selection in order
@@ -226,6 +227,7 @@ void checkForCycles(const SelectionDAG *DAG, bool force = false);
 /// linear form.
 ///
 class SelectionDAG {
+  //- sel-dag
   const TargetMachine &TM;
   const SelectionDAGTargetInfo *TSI = nullptr;
   const TargetLowering *TLI = nullptr;

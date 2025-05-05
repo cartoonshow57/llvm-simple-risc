@@ -12,7 +12,7 @@ class SDNodeProperty;
 class SDPatternOperator {
   list<SDNodeProperty> Properties = [];
 }
-
+//@s sdnode-properties mark
 //===----------------------------------------------------------------------===//
 // Selection DAG Node Properties.
 //
@@ -29,3 +29,4 @@ def SDNPMayLoad     : SDNodeProperty;   // May read memory, sets 'mayLoad'.
 def SDNPSideEffect  : SDNodeProperty;   // Sets 'HasUnmodelledSideEffects'.
 def SDNPMemOperand  : SDNodeProperty;   // Touches memory, has assoc MemOperand
 def SDNPVariadic    : SDNodeProperty;   // Node has variable arguments.
+//- sdnode-properties

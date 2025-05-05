@@ -71,6 +71,7 @@ def OtherVT : ValueType<0,   1> {  // "Other" value
   let LLVMName = "Other";
 }
 
+//@s value-types-1 mark
 def i1      : VTInt<1,   2>;  // One bit boolean value
 def i2      : VTInt<2,   3>;  // 2-bit integer value
 def i4      : VTInt<4,   4>;  // 4-bit integer value
@@ -87,6 +88,7 @@ def f64     : VTFP<64,  13>;  // 64-bit floating point value
 def f80     : VTFP<80,  14>;  // 80-bit floating point value
 def f128    : VTFP<128, 15>;  // 128-bit floating point value
 def ppcf128 : VTFP<128, 16>;  // PPC 128-bit floating point value
+//- value-types-1
 
 def v1i1    : VTVec<1,    i1, 17>;  //    1 x i1 vector value
 def v2i1    : VTVec<2,    i1, 18>;  //    2 x i1 vector value
