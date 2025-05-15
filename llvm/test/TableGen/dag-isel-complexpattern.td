@@ -14,6 +14,7 @@ def GPR32 : RegisterClass<"TestTarget", [i32], 32, (add REG32)>;
 def GPR64 : RegisterClass<"TestTarget", [i64], 64, (add REG64)>;
 
 def CP32 : ComplexPattern<i32, 0, "SelectCP32">;
+def TestCP : ComplexPattern<i32, 2, "SelectCP32">;
 
 // Without using ComplexPattern's type, this pattern would be ambiguous as to
 // what integer type is being used, since both i32 and i64 are legal, and used

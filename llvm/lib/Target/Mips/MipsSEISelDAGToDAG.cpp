@@ -307,9 +307,12 @@ bool MipsSEDAGToDAGISel::selectAddrFrameIndexOffset(
 bool MipsSEDAGToDAGISel::selectAddrRegImm(SDValue Addr, SDValue &Base,
                                           SDValue &Offset) const {
   // if Address is FI, get the TargetFrameIndex.
+  llvm::dbgs() << "Selecting addr reg imm\n";
+  Addr.dump();
   if (selectAddrFrameIndex(Addr, Base, Offset))
     return true;
 
+  llvm::dbgs() << "Here\n";
   // on PIC code Load GA
   if (Addr.getOpcode() == MipsISD::Wrapper) {
     Base   = Addr.getOperand(0);

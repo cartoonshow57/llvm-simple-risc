@@ -967,7 +967,7 @@ static Triple::ObjectFormatType getDefaultFormat(const Triple &T) {
   case Triple::mips64el:
   case Triple::mips:
   //@s default-format-nova
-  // case Triple::mipsnova:
+  case Triple::mipsnova:
   //- default-format-nova
   case Triple::msp430:
   case Triple::nvptx64:

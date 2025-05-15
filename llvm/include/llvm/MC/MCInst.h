@@ -32,6 +32,7 @@ class MCInstPrinter;
 class MCRegisterInfo;
 class raw_ostream;
 
+//@s mc-operand mark
 /// Instances of this class represent operands of the MCInst class.
 /// This is a simple discriminated union.
 class MCOperand {
@@ -44,6 +45,7 @@ class MCOperand {
     kExpr,         ///< Relocatable immediate operand.
     kInst          ///< Sub-instruction operand.
   };
+//- mc-operand
   MachineOperandType Kind = kInvalid;
 
   union {

@@ -4820,6 +4820,7 @@ public:
     return true;
   }
 
+//@s the-lower-return mark
   /// This hook must be implemented to lower outgoing return values, described
   /// by the Outs array, into the specified DAG. The implementation should
   /// return the resulting token chain value.
@@ -4831,6 +4832,7 @@ public:
                               SelectionDAG & /*DAG*/) const {
     llvm_unreachable("Not Implemented");
   }
+//- the-lower-return
 
   /// Return true if result of the specified node is used by a return node
   /// only. It also compute and return the input chain for the tail call.
