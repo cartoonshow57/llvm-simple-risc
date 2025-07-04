@@ -1,23 +1,25 @@
 {
-  "name": "LLVM RISC Compiler",                  // Display name shown in Codespaces UI
-  "image": "mcr.microsoft.com/vscode/devcontainers/base:ubuntu-22.04",  // Base Docker image
-  "features": {                                   // Devcontainer features to install
-    "ghcr.io/devcontainers/features/cmake:1": {},    // CMake for project configuration
-    "ghcr.io/devcontainers/features/llvm:1": {       // LLVM toolchain feature
-      "version": "15"                               // Specific LLVM version to install
+  "name": "LLVM RISC Compiler",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
+
+  "features": {
+    "devcontainers/features/llvm": {
+      "version": "15"
     },
-    "ghcr.io/devcontainers/features/ninja:1": {}      // Ninja build system
+    "devcontainers/features/cmake": {},
+    "devcontainers/features/ninja": {}
   },
-  "customizations": {                             // VS Code-specific settings
+
+  "customizations": {
     "vscode": {
-      "extensions": [                             // Extensions auto-installed in your Codespace
-        "llvm-vs-code-extensions.vscode-clangd",  // Clangd LSP support
-        "ms-vscode.cpptools",                     // Microsoft C++ tools (IntelliSense, debugger)
-        "ms-vscode.cmake-tools"                   // CMake integration in VS Code
+      "extensions": [
+        "llvm-vs-code-extensions.vscode-clangd",
+        "ms-vscode.cpptools",
+        "ms-vscode.cmake-tools"
       ]
     }
   },
-  "postCreateCommand":                             // Runs once after container creation
-    "mkdir -p build && cd build && cmake -G Ninja ../llvm-project/llvm && ninja -j$(nproc)",
-  "remoteUser": "vscode"                         // Sets the default user inside the container
+
+  "postCreateCommand": "mkdir -p build && cd build && cmake -G Ninja ../llvm && ninja -j$(nproc)",
+  "remoteUser": "vscode"
 }
