@@ -1,15 +1,8 @@
 {
   "name": "LLVM RISC Compiler",
-  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
-
-  "features": {
-    "devcontainers/features/llvm": {
-      "version": "15"
-    },
-    "devcontainers/features/cmake": {},
-    "devcontainers/features/ninja": {}
+  "build": {
+    "dockerfile": "Dockerfile"
   },
-
   "customizations": {
     "vscode": {
       "extensions": [
@@ -19,7 +12,6 @@
       ]
     }
   },
-
   "postCreateCommand": "mkdir -p build && cd build && cmake -G Ninja ../llvm && ninja -j$(nproc)",
   "remoteUser": "vscode"
 }
