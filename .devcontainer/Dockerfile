@@ -1,14 +1,10 @@
-# Uncomment and customize this Dockerfile if you need extra OS packages
-# beyond what the devcontainer “features” install.
+FROM mcr.microsoft.com/devcontainers/base:ubuntu-22.04
 
-# Base image—must match (or extend) the one in devcontainer.json
-# FROM mcr.microsoft.com/vscode/devcontainers/base:ubuntu-22.04
-
-# Install any additional packages you need. Example:
-# RUN apt-get update && \
-#     apt-get install -y \
-#       git \
-#       curl \
-#       python3 \
-#       python3-pip && \
-#     rm -rf /var/lib/apt/lists/*
+RUN apt-get update && \
+    apt-get install -y \
+      cmake \
+      ninja-build \
+      llvm \
+      clang \
+      lld \
+    && rm -rf /var/lib/apt/lists/*
