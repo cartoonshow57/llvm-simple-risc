@@ -12,6 +12,6 @@
       ]
     }
   },
-  "postCreateCommand": "mkdir -p build && cd build && cmake -G Ninja ../llvm && ninja -j$(nproc)",
+  // "postCreateCommand": "mkdir -p build && cd build && cmake -G Ninja ../llvm && ninja -j$(nproc)",
   "remoteUser": "vscode"
 }
