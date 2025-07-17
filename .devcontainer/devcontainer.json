@@ -21,7 +21,7 @@
       ]
     }
   },
-  "postCreateCommand": "ccache --zero-stats && ccache --set-config=max_size=5G",
+  "postCreateCommand": "ccache --zero-stats && ccache --set-config=max_size=10G",
   "postStartCommand": "ccache --show-stats",
   "remoteUser": "vscode"
 }
