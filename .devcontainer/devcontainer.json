@@ -3,8 +3,17 @@
   "build": {
     "dockerfile": "Dockerfile"
   },
+  "containerEnv": {
+    "CCACHE_DIR": "/workspaces/.ccache"
+  },
   "customizations": {
     "vscode": {
+      "settings": {
+        "cmake.configureArgs": [
+          "-DCMAKE_C_COMPILER_LAUNCHER=ccache",
+          "-DCMAKE_CXX_COMPILER_LAUNCHER=ccache"
+        ]
+      },
       "extensions": [
         "llvm-vs-code-extensions.vscode-clangd",
         "ms-vscode.cpptools",
@@ -12,6 +21,7 @@
       ]
     }
   },
-  // "postCreateCommand": "mkdir -p build && cd build && cmake -G Ninja ../llvm && ninja -j$(nproc)",
+  "postCreateCommand": "ccache --zero-stats && ccache --set-config=max_size=5G",
+  "postStartCommand": "ccache --show-stats",
   "remoteUser": "vscode"
 }
