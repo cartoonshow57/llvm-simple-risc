@@ -6,4 +6,5 @@ RUN apt-get update && \
       build-essential \
       cmake \
       ninja-build \
+      ccache \
     && rm -rf /var/lib/apt/lists/*
