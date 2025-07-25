@@ -4,27 +4,40 @@
 //
 //===----------------------------------------------------------------------===//
 
-// A generic instruction format for our target.
-class SimpleRISCInst<dag outs, dag ins, string asmstr, list<dag> pattern>
-  : Instruction {
-  let OutOperandList = outs;
-  let InOperandList  = ins;
-  let AsmString      = asmstr;
-  let Pattern        = pattern;
+def SDT_SimpleRISCRet : SDTypeProfile<0, 1, [SDTCisInt<0>]>;
+
+def SimpleRISCRet : SDNode<"SimpleRISCISD::Ret", SDT_SimpleRISCRet,
+                     [SDNPHasChain, SDNPOptInGlue, SDNPVariadic]>;
+
+//===----------------------------------------------------------------------===//
+// Instruction format superclass
+//===----------------------------------------------------------------------===//
+
+include "SimpleRISCInstFormats.td"
+
+//===----------------------------------------------------------------------===//
+// SimpleRISC Operand, Complex Patterns and Transformations Definitions.
+//===----------------------------------------------------------------------===//
+
+// A 16-bit signed immediate operand.
+// This tells the disassembler to call a C++ function named
+// 'DecodeSimm16' when it encounters this type of operand.
+def simm16 : Operand<i32> {
+  let DecoderMethod = "DecodeSimm16";
 }
 
-// These pseudo-instructions are required by LLVM for stack management.
-// Their patterns (callseq_start/end) are now visible via the master .td file.
-def ADJCALLSTACKDOWN : SimpleRISCInst<(outs), (ins i32imm:$amt1, i32imm:$amt2),
-                                     "", [(callseq_start timm:$amt1, timm:$amt2)]> {
-  let isCodeGenOnly = 1;
-}
-def ADJCALLSTACKUP   : SimpleRISCInst<(outs), (ins i32imm:$amt1, i32imm:$amt2),
-                                     "", [(callseq_end timm:$amt1, timm:$amt2)]> {
-  let isCodeGenOnly = 1;
-}
+// A memory address operand. This is the most important part.
+// It defines the [base_register + immediate_offset] addressing mode.
+def mem : Operand<iPTR> {
+  // Tell the instruction printer to call our custom C++ function
+  // to print memory operands correctly (e.g., "100(r2)").
+  let PrintMethod = "printSimpleRISCMemOperand";
 
-// A real 'ADD' instruction. Its pattern (set/add) is also now visible.
-def ADD : SimpleRISCInst<(outs GPR:$rd), (ins GPR:$rs1, GPR:$rs2),
-                         "add $rd, $rs1, $rs2",
-                         [(set GPR:$rd, (add GPR:$rs1, GPR:$rs2))]>;
+  // This defines the structure of the 'mem' operand for the compiler.
+  // It's made of two parts: a general-purpose register and a 16-bit immediate.
+  let MIOperandInfo = (ops GPR, simm16);
+
+  // Tell the assembler to call our custom C++ function to encode
+  // this memory operand into its final binary format.
+  let EncoderMethod = "getSimpleRISCMemOperand";
+}
