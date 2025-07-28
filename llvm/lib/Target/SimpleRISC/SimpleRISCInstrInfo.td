@@ -87,6 +87,25 @@ def store_a : AlignedStore;
 // First, make sure you include the file with all your format and opcode definitions.
 include "SimpleRISCInstFormats.td"
 
+//===----------------------------------------------------------------------===//
+//  Format R (Register-to-Register)
+//===----------------------------------------------------------------------===//
+// This class defines the blueprint for instructions that operate on three
+// registers, like: ADD rd, rs1, rs2
+class InstR<dag outs, dag ins, string asmstr, list<dag> pattern>
+  : SimpleRISCInst<outs, ins, asmstr, pattern> {
+  // These are the fields that make up the instruction.
+  bits<5> opcode;
+  bits<4> rd;  // Destination register
+  bits<4> rs1; // Source register 1
+  bits<4> rs2; // Source register 2
+
+  // This is the most important part: it defines the 32-bit binary encoding.
+  // It tells TableGen how to assemble the fields into the final machine code.
+  // We use the 'InstFormatR' value (which is 2) to identify this format.
+  let Inst = { 0b000000000000, rs2, rs1, rd, opcode, InstFormatR.Value };
+}
+
 // Now, let's define the ADD instruction.
 // We inherit from the 'InstR' class we created earlier.
 def ADD : InstR<(outs GPR:$rd), (ins GPR:$rs1, GPR:$rs2),
