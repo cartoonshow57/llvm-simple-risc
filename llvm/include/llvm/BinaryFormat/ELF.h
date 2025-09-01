@@ -325,6 +325,7 @@ enum {
   EM_VE = 251,            // NEC SX-Aurora VE
   EM_CSKY = 252,          // C-SKY 32-bit processor
   EM_LOONGARCH = 258,     // LoongArch
+  EM_CGP1 = 259,          // Dhruv Custom GPU
 };
 
 // Object file classes.
@@ -695,7 +696,10 @@ enum {
 enum {
 #include "ELFRelocs/Lanai.def"
 };
-
+//ELF Relocation type for CGP1(Dhruv)
+enum{
+  #include "ELFRelocs/CGP1.def"
+};
 // RISCV Specific e_flags
 enum : unsigned {
   EF_RISCV_RVC = 0x0001,
