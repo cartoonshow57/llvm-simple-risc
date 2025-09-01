@@ -20,6 +20,7 @@
 #undef sparc
 
 namespace llvm {
+enum class ExceptionHandling;
 class Twine;
 
 /// Triple - Helper class for working with autoconf configuration names. For
@@ -198,7 +199,8 @@ public:
     SUSE,
     OpenEmbedded,
     Intel,
-    LastVendorType = Intel
+    Meta,
+    LastVendorType = Meta
   };
   enum OSType {
     UnknownOS,
@@ -221,7 +223,6 @@ public:
     ZOS,
     Haiku,
     RTEMS,
-    NaCl, // Native Client
     AIX,
     CUDA,   // NVIDIA CUDA
     NVCL,   // NVIDIA OpenCL
@@ -307,8 +308,8 @@ public:
     Mlibc,
 
     PAuthTest,
-
-    LastEnvironmentType = PAuthTest
+    MTIA,
+    LastEnvironmentType = MTIA
   };
   enum ObjectFormatType {
     UnknownObjectFormat,
@@ -720,11 +721,6 @@ public:
            isWindowsItaniumEnvironment();
   }
 
-  /// Tests whether the OS is NaCl (Native Client)
-  bool isOSNaCl() const {
-    return getOS() == Triple::NaCl;
-  }
-
   /// Tests whether the OS is Linux.
   bool isOSLinux() const {
     return getOS() == Triple::Linux;
@@ -1071,10 +1067,14 @@ public:
   }
 
   /// Tests whether the target is 32-bit RISC-V.
-  bool isRISCV32() const { return getArch() == Triple::riscv32; }
+  bool isRISCV32() const {
+    return getArch() == Triple::riscv32 || getArch() == Triple::riscv32be;
+  }
 
   /// Tests whether the target is 64-bit RISC-V.
-  bool isRISCV64() const { return getArch() == Triple::riscv64; }
+  bool isRISCV64() const {
+    return getArch() == Triple::riscv64 || getArch() == Triple::riscv64be;
+  }
 
   /// Tests whether the target is RISC-V (32- and 64-bit).
   bool isRISCV() const { return isRISCV32() || isRISCV64(); }
@@ -1323,6 +1323,8 @@ public:
   /// Returns whether an OS version is invalid and would not map to an Apple OS.
   LLVM_ABI static bool isValidVersionForOS(OSType OSKind,
                                            const VersionTuple &Version);
+
+  LLVM_ABI ExceptionHandling getDefaultExceptionHandling() const;
 };
 
 } // End llvm namespace
