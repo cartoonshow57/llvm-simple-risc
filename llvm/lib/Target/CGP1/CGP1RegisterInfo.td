@@ -29,6 +29,7 @@ foreach i = 0-31 in {
 // Register aliases
 let SubRegIndices = [sub_32] in {
   def PC  : CGP1Reg< 2,  "pc",  [R2]>,  DwarfRegAlias<R2>;
+  def SR  : CGP1Reg< 3,  "sw",  [R3]>,  DwarfRegAlias<R3>;
   def SP  : CGP1Reg< 4,  "sp",  [R4]>,  DwarfRegAlias<R4>;
   def FP  : CGP1Reg< 5,  "fp",  [R5]>,  DwarfRegAlias<R5>;
   def RV  : CGP1Reg< 8,  "rv",  [R8]>,  DwarfRegAlias<R8>;
@@ -39,7 +40,7 @@ let SubRegIndices = [sub_32] in {
 
 // Define a status register to capture the dependencies between the set flag
 // and setcc instructions
-def SR : CGP1Reg< 0, "sw">;
+// def SR : CGP1Reg< 0, "sw">; Moved in the alias 
 
 // Register classes.
 def GPR : RegisterClass<"CGP1", [i32], 32,
