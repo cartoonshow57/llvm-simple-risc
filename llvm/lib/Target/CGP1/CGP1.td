@@ -21,8 +21,6 @@ include "CGP1RegisterInfo.td"
 include "CGP1CallingConv.td"
 include "CGP1InstrInfo.td"
 
-def CGP1InstrInfo : InstrInfo;
-
 //===----------------------------------------------------------------------===//
 // CGP1 processors supported.
 //===----------------------------------------------------------------------===//
