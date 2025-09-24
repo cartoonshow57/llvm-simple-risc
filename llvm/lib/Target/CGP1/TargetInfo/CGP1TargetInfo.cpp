@@ -7,6 +7,7 @@
 //===----------------------------------------------------------------------===//
 
 #include "TargetInfo/CGP1TargetInfo.h"
+#include "llvm/TargetParser/Triple.h" // optional but safe
 #include "llvm/MC/TargetRegistry.h"
 #include "llvm/Support/Compiler.h"
 
@@ -17,8 +18,14 @@ Target &llvm::getTheCGP1Target() {
   return TheCGP1Target;
 }
 
-extern "C" LLVM_ABI LLVM_EXTERNAL_VISIBILITY void
-LLVMInitializeCGP1TargetInfo() {
-  RegisterTarget<Triple::cgp1> X(getTheCGP1Target(), "cgp1", "CGP1",
-                                  "CGP1");
+extern "C" LLVM_EXTERNAL_VISIBILITY void LLVMInitializeCGP1TargetInfo() {
+  // Use UnknownArch for now to avoid having to modify LLVM's Triple enum.
+  // If you want a "real" 'cgp1' triple later, add it to LLVM's Triple
+  // definitions.
+  RegisterTarget<Triple::UnknownArch> X(
+      getTheCGP1Target(),
+      "cgp1", // name passed to registry (triple arch string)
+      "CGP1", // short description
+      "CGP1"  // long description
+  );
 }

@@ -10,7 +10,6 @@ tablegen(LLVM CGP1GenDisassemblerTables.inc -gen-disassembler)
 tablegen(LLVM CGP1GenInstrInfo.inc -gen-instr-info)
 tablegen(LLVM CGP1GenMCCodeEmitter.inc -gen-emitter)
 tablegen(LLVM CGP1GenRegisterInfo.inc -gen-register-info)
-tablegen(LLVM CGP1GenSDNodeInfo.inc -gen-sd-node-info)
 tablegen(LLVM CGP1GenSubtargetInfo.inc -gen-subtarget)
 
 add_public_tablegen_target(CGP1CommonTableGen)

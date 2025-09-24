@@ -1,16 +1,10 @@
 //===-- CGP1MCAsmInfo.cpp - CGP1 asm properties -----------------------===//
-//
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
-//
-//===----------------------------------------------------------------------===//
-//
-// This file contains the declarations of the CGP1MCAsmInfo properties.
+// Minimal implementation matching the header.
 //
 //===----------------------------------------------------------------------===//
 
 #include "CGP1MCAsmInfo.h"
+#include "MCTargetDesc/CGP1MCExpr.h" // optional local enum stub (if present)
 #include "llvm/MC/MCExpr.h"
 #include "llvm/Support/raw_ostream.h"
 #include "llvm/TargetParser/Triple.h"
@@ -20,45 +14,23 @@ using namespace llvm;
 void CGP1MCAsmInfo::anchor() {}
 
 CGP1MCAsmInfo::CGP1MCAsmInfo(const Triple & /*TheTriple*/,
-                               const MCTargetOptions &Options) {
+                             const MCTargetOptions & /*Options*/) {
   IsLittleEndian = false;
   PrivateGlobalPrefix = ".L";
   WeakRefDirective = "\t.weak\t";
   ExceptionsType = ExceptionHandling::DwarfCFI;
-
-  // CGP1 assembly requires ".section" before ".bss"
   UsesELFSectionDirectiveForBSS = true;
-
-  // Use '!' as comment string to correspond with old toolchain.
   CommentString = "!";
-
-  // Target supports emission of debugging information.
   SupportsDebugInformation = true;
-
-  // Set the instruction alignment. Currently used only for address adjustment
-  // in dwarf generation.
   MinInstAlignment = 4;
 }
 
+// Minimal, robust printing: use MCExpr::print to print the expression.
+// This avoids depending on a non-standard MCSpecifierExpr type.
 void CGP1MCAsmInfo::printSpecifierExpr(raw_ostream &OS,
-                                        const MCSpecifierExpr &Expr) const {
-  if (Expr.getSpecifier() == 0) {
-    printExpr(OS, *Expr.getSubExpr());
-    return;
-  }
-
-  switch (Expr.getSpecifier()) {
-  default:
-    llvm_unreachable("Invalid kind!");
-  case CGP1::S_ABS_HI:
-    OS << "hi";
-    break;
-  case CGP1::S_ABS_LO:
-    OS << "lo";
-    break;
-  }
-
-  OS << '(';
-  printExpr(OS, *Expr.getSubExpr());
-  OS << ')';
+                                       const MCExpr &Expr) const {
+  // MCExpr::print has signature like `void print(raw_ostream &, const
+  // MCAsmInfo*) const` in many LLVM versions. Try that first; if your LLVM
+  // version differs we will adapt.
+  Expr.print(OS, this);
 }

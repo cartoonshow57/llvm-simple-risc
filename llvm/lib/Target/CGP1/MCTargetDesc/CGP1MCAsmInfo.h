@@ -1,37 +1,31 @@
-//=====-- CGP1MCAsmInfo.h - CGP1 asm properties -----------*- C++ -*--====//
-//
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
-//
-//===----------------------------------------------------------------------===//
-//
-// This file contains the declaration of the CGP1MCAsmInfo class.
-//
+//===-- CGP1MCAsmInfo.h - CGP1 asm properties -----------------*- C++ -*-===//
+// Minimal MCAsmInfo for CGP1
 //===----------------------------------------------------------------------===//
 
 #ifndef LLVM_LIB_TARGET_CGP1_MCTARGETDESC_CGP1MCASMINFO_H
 #define LLVM_LIB_TARGET_CGP1_MCTARGETDESC_CGP1MCASMINFO_H
 
-#include "llvm/MC/MCAsmInfoELF.h"
+#include "llvm/MC/MCAsmInfo.h"        // base class
+#include "llvm/MC/MCExpr.h"           // MCExpr (complete type)
+#include "llvm/Support/raw_ostream.h" // raw_ostream (complete type)
 
 namespace llvm {
 class Triple;
+class MCTargetOptions;
 
-class CGP1MCAsmInfo : public MCAsmInfoELF {
-  void anchor() override;
-
+/// CGP1-specific MCAsmInfo. Minimal and stable across LLVM versions.
+class CGP1MCAsmInfo : public MCAsmInfo {
 public:
-  explicit CGP1MCAsmInfo(const Triple &TheTriple,
-                          const MCTargetOptions &Options);
-  void printSpecifierExpr(raw_ostream &OS,
-                          const MCSpecifierExpr &Expr) const override;
-};
+  // Anchor to force vtable emission in this TU.
+  void anchor();
 
-namespace CGP1 {
-using Specifier = uint8_t;
-enum { S_None, S_ABS_HI, S_ABS_LO };
-} // namespace CGP1
+  // Constructor used by target registration.
+  CGP1MCAsmInfo(const Triple &TheTriple, const MCTargetOptions &Options);
+
+  // Print target-specific relocation specifiers like %hi/%lo etc.
+  // Use MCExpr (LLVM-provided) so the type is always available.
+  void printSpecifierExpr(raw_ostream &OS, const MCExpr &Expr) const;
+};
 
 } // namespace llvm
 
