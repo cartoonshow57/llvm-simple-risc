@@ -495,7 +495,7 @@ set(LLVM_ALL_TARGETS
   LoongArch
   Mips
 #@s nova-all-targets-cmake
-  Nova
+  CGP1
 #- nova-all-targets-cmake
   MSP430
   NVPTX
@@ -516,7 +516,7 @@ set(LLVM_ALL_EXPERIMENTAL_TARGETS
   DirectX
   M68k
   Xtensa
-  # MipsNova
+  # CGP1
 )
 
 # List of targets with JIT support:

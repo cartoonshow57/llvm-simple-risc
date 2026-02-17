@@ -66,31 +66,8 @@ std::string getClangVendor() {
 }
 
 std::string getClangFullRepositoryVersion() {
-  std::string buf;
-  llvm::raw_string_ostream OS(buf);
-  std::string Path = getClangRepositoryPath();
-  std::string Revision = getClangRevision();
-  if (!Path.empty() || !Revision.empty()) {
-    OS << '(';
-    if (!Path.empty())
-      OS << Path;
-    if (!Revision.empty()) {
-      if (!Path.empty())
-        OS << ' ';
-      OS << Revision;
-    }
-    OS << ')';
-  }
-  // Support LLVM in a separate repository.
-  std::string LLVMRev = getLLVMRevision();
-  if (!LLVMRev.empty() && LLVMRev != Revision) {
-    OS << " (";
-    std::string LLVMRepo = getLLVMRepositoryPath();
-    if (!LLVMRepo.empty())
-      OS << LLVMRepo << ' ';
-    OS << LLVMRev << ')';
-  }
-  return buf;
+  // Return empty string to hide repository and revision info
+  return "";
 }
 
 std::string getClangFullVersion() {

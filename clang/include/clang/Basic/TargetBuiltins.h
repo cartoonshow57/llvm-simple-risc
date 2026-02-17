@@ -110,6 +110,16 @@ namespace clang {
   };
   }
 
+  /// CGP1 GPU builtins
+  namespace CGP1 {
+  enum {
+    LastTIBuiltin = clang::Builtin::FirstTSBuiltin - 1,
+#define BUILTIN(ID, TYPE, ATTRS) BI##ID,
+#include "clang/Basic/BuiltinsCGP1.def"
+    LastTSBuiltin
+  };
+  }
+
   /// PPC builtins
   namespace PPC {
     enum {

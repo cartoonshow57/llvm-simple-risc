@@ -1,0 +1,157 @@
+	.file	"gpu_test_full.c"
+	.text
+	.globl	get_global_id                   # -- Begin function get_global_id
+	.type	get_global_id,@function
+get_global_id:                          # @get_global_id
+# %bb.0:
+	thread_id_x	$r1
+	store	[$r13 + 12], $r1
+	block_id_x	$r1
+	store	[$r13 + 8], $r1
+	block_dim_x	$r1
+	store	[$r13 + 4], $r1
+	load	$r1, [$r13 + 8]
+	load	$r2, [$r13 + 4]
+	mul	$r1, $r1, $r2
+	load	$r2, [$r13 + 12]
+	add	$r1, $r1, $r2
+	ret
+.Lfunc_end0:
+	.size	get_global_id, .Lfunc_end0-get_global_id
+                                        # -- End function
+	.globl	multiply                        # -- Begin function multiply
+	.type	multiply,@function
+multiply:                               # @multiply
+# %bb.0:
+	store	[$r13 + 4], $r1
+	store	[$r13], $r2
+	load	$r1, [$r13 + 4]
+	load	$r2, [$r13]
+	mul	$r1, $r1, $r2
+	ret
+.Lfunc_end1:
+	.size	multiply, .Lfunc_end1-multiply
+                                        # -- End function
+	.globl	divide                          # -- Begin function divide
+	.type	divide,@function
+divide:                                 # @divide
+# %bb.0:
+	store	[$r13 + 4], $r1
+	store	[$r13], $r2
+	load	$r1, [$r13 + 4]
+	load	$r2, [$r13]
+	div	$r1, $r1, $r2
+	ret
+.Lfunc_end2:
+	.size	divide, .Lfunc_end2-divide
+                                        # -- End function
+	.globl	modulo                          # -- Begin function modulo
+	.type	modulo,@function
+modulo:                                 # @modulo
+# %bb.0:
+	store	[$r13 + 4], $r1
+	store	[$r13], $r2
+	load	$r1, [$r13 + 4]
+	load	$r2, [$r13]
+	mod	$r1, $r1, $r2
+	ret
+.Lfunc_end3:
+	.size	modulo, .Lfunc_end3-modulo
+                                        # -- End function
+	.globl	bitwise_ops                     # -- Begin function bitwise_ops
+	.type	bitwise_ops,@function
+bitwise_ops:                            # @bitwise_ops
+# %bb.0:
+	store	[$r13 + 12], $r1
+	store	[$r13 + 8], $r2
+	load	$r1, [$r13 + 12]
+	load	$r2, [$r13 + 8]
+	and	$r1, $r1, $r2
+	store	[$r13 + 4], $r1
+	load	$r1, [$r13 + 4]
+	load	$r2, [$r13 + 12]
+	load	$r3, [$r13 + 8]
+	xor	$r2, $r2, $r3
+	or	$r1, $r1, $r2
+	store	[$r13 + 4], $r1
+	load	$r1, [$r13 + 4]
+	loadi	$r2, 2
+	shl	$r1, $r1, $r2
+	store	[$r13 + 4], $r1
+	load	$r1, [$r13 + 4]
+	loadi	$r2, 1
+	shra	$r1, $r1, $r2
+	store	[$r13 + 4], $r1
+	load	$r1, [$r13 + 4]
+	ret
+.Lfunc_end4:
+	.size	bitwise_ops, .Lfunc_end4-bitwise_ops
+                                        # -- End function
+	.globl	conditional                     # -- Begin function conditional
+	.type	conditional,@function
+conditional:                            # @conditional
+# %bb.0:
+	store	[$r13], $r1
+	load	$r1, [$r13]
+	loadi	$r2, -1
+	add	$r1, $r1, $r2
+	brltz	$r1, .LBB5_2
+	jump	.LBB5_1
+.LBB5_1:
+	load	$r1, [$r13]
+	loadi	$r2, 1
+	shl	$r1, $r1, $r2
+	store	[$r13 + 4], $r1
+	jump	.LBB5_3
+.LBB5_2:
+	load	$r1, [$r13]
+	loadi	$r2, -1
+	add	$r1, $r1, $r2
+	store	[$r13 + 4], $r1
+	jump	.LBB5_3
+.LBB5_3:
+	load	$r1, [$r13 + 4]
+	ret
+.Lfunc_end5:
+	.size	conditional, .Lfunc_end5-conditional
+                                        # -- End function
+	.globl	loop_sum                        # -- Begin function loop_sum
+	.type	loop_sum,@function
+loop_sum:                               # @loop_sum
+# %bb.0:
+	store	[$r13 + 12], $r1
+	loadi	$r1, 0
+	store	[$r13 + 8], $r1
+	store	[$r13 + 4], $r1
+	jump	.LBB6_1
+.LBB6_1:                                # =>This Inner Loop Header: Depth=1
+	load	$r1, [$r13 + 4]
+	load	$r2, [$r13 + 12]
+	sub	$r1, $r1, $r2
+	brgez	$r1, .LBB6_3
+	jump	.LBB6_2
+.LBB6_2:                                #   in Loop: Header=BB6_1 Depth=1
+	load	$r1, [$r13 + 8]
+	load	$r2, [$r13 + 4]
+	add	$r1, $r1, $r2
+	store	[$r13 + 8], $r1
+	load	$r1, [$r13 + 4]
+	loadi	$r2, 1
+	add	$r1, $r1, $r2
+	store	[$r13 + 4], $r1
+	jump	.LBB6_1
+.LBB6_3:
+	load	$r1, [$r13 + 8]
+	ret
+.Lfunc_end6:
+	.size	loop_sum, .Lfunc_end6-loop_sum
+                                        # -- End function
+	.globl	sync_block                      # -- Begin function sync_block
+	.type	sync_block,@function
+sync_block:                             # @sync_block
+# %bb.0:
+	barrier
+	ret
+.Lfunc_end7:
+	.size	sync_block, .Lfunc_end7-sync_block
+                                        # -- End funct

@@ -19,6 +19,7 @@
 #include "Targets/ARM.h"
 #include "Targets/AVR.h"
 #include "Targets/BPF.h"
+#include "Targets/CGP1.h"
 #include "Targets/CSKY.h"
 #include "Targets/DirectX.h"
 #include "Targets/Hexagon.h"
@@ -285,6 +286,9 @@ std::unique_ptr<TargetInfo> AllocateTarget(const llvm::Triple &Triple,
     default:
       return std::make_unique<MipsTargetInfo>(Triple, Opts);
     }
+
+  case llvm::Triple::cgp1:
+    return std::make_unique<CGP1TargetInfo>(Triple, Opts);
 
   case llvm::Triple::mipsel:
     switch (os) {

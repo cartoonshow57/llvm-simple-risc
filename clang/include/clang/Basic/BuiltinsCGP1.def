@@ -1,0 +1,106 @@
+//===--- BuiltinsCGP1.def - CGP1 GPU Builtin function database --*- C++ -*-===//
+//
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//
+//===----------------------------------------------------------------------===//
+//
+// This file defines the CGP1 GPU-specific builtin function database.
+//
+//===----------------------------------------------------------------------===//
+
+// The format of this database matches clang/Basic/Builtins.def.
+
+// Thread indexing - returns i32
+BUILTIN(__builtin_cgp1_thread_id_x, "i", "nc")
+BUILTIN(__builtin_cgp1_thread_id_y, "i", "nc")
+BUILTIN(__builtin_cgp1_thread_id_z, "i", "nc")
+
+// Block indexing - returns i32
+BUILTIN(__builtin_cgp1_block_id_x, "i", "nc")
+BUILTIN(__builtin_cgp1_block_id_y, "i", "nc")
+BUILTIN(__builtin_cgp1_block_id_z, "i", "nc")
+
+// Block dimensions - returns i32
+BUILTIN(__builtin_cgp1_block_dim_x, "i", "nc")
+BUILTIN(__builtin_cgp1_block_dim_y, "i", "nc")
+BUILTIN(__builtin_cgp1_block_dim_z, "i", "nc")
+
+// Grid dimensions - returns i32
+BUILTIN(__builtin_cgp1_grid_dim_x, "i", "nc")
+BUILTIN(__builtin_cgp1_grid_dim_y, "i", "nc")
+BUILTIN(__builtin_cgp1_grid_dim_z, "i", "nc")
+
+// Synchronization
+BUILTIN(__builtin_cgp1_barrier, "v", "n")
+
+// SIMT execution mask (EXEC)
+BUILTIN(__builtin_cgp1_exec_get, "i", "nc")
+BUILTIN(__builtin_cgp1_exec_set, "vi", "n")
+BUILTIN(__builtin_cgp1_exec_push, "v", "n")
+BUILTIN(__builtin_cgp1_exec_pop, "v", "n")
+BUILTIN(__builtin_cgp1_exec_and, "vi", "n")
+
+// Graphics
+BUILTIN(__builtin_cgp1_write_pixel, "viii", "n")
+BUILTIN(__builtin_cgp1_clear_screen, "vi", "n")
+BUILTIN(__builtin_cgp1_draw_line, "viiiii", "n")
+BUILTIN(__builtin_cgp1_draw_triangle, "viiiiii", "n")
+
+// Shared memory
+BUILTIN(__builtin_cgp1_shared_load, "ii", "n")
+BUILTIN(__builtin_cgp1_shared_store, "vii", "n")
+
+// Atomic operations
+BUILTIN(__builtin_cgp1_atomic_add, "iv*i", "n")
+BUILTIN(__builtin_cgp1_atomic_cas, "iv*ii", "n")
+BUILTIN(__builtin_cgp1_atomic_max, "iv*i", "n")
+BUILTIN(__builtin_cgp1_atomic_min, "iv*i", "n")
+BUILTIN(__builtin_cgp1_atomic_exch, "iv*i", "n")
+
+// Warp-level primitives
+BUILTIN(__builtin_cgp1_warp_size, "i", "nc")
+BUILTIN(__builtin_cgp1_lane_id, "i", "nc")
+BUILTIN(__builtin_cgp1_warp_all, "ii", "nc")
+BUILTIN(__builtin_cgp1_warp_any, "ii", "nc")
+BUILTIN(__builtin_cgp1_warp_ballot, "ii", "nc")
+BUILTIN(__builtin_cgp1_warp_shuffle, "iii", "nc")
+
+// Fast math
+BUILTIN(__builtin_cgp1_rcp, "ff", "nc")
+BUILTIN(__builtin_cgp1_rsqrt, "ff", "nc")
+BUILTIN(__builtin_cgp1_sin, "ff", "nc")
+BUILTIN(__builtin_cgp1_cos, "ff", "nc")
+BUILTIN(__builtin_cgp1_exp, "ff", "nc")
+BUILTIN(__builtin_cgp1_log, "ff", "nc")
+
+// OpenGL-like graphics
+BUILTIN(__builtin_cgp1_set_viewport, "viiii", "n")
+BUILTIN(__builtin_cgp1_set_color, "vi", "n")
+BUILTIN(__builtin_cgp1_set_depth, "vf", "n")
+BUILTIN(__builtin_cgp1_begin, "vi", "n")
+BUILTIN(__builtin_cgp1_end, "v", "n")
+BUILTIN(__builtin_cgp1_vertex2i, "vii", "n")
+BUILTIN(__builtin_cgp1_vertex2f, "vff", "n")
+BUILTIN(__builtin_cgp1_vertex3f, "vfff", "n")
+BUILTIN(__builtin_cgp1_draw_rect, "viiii", "n")
+BUILTIN(__builtin_cgp1_fill_rect, "viiii", "n")
+BUILTIN(__builtin_cgp1_draw_circle, "viii", "n")
+BUILTIN(__builtin_cgp1_fill_circle, "viii", "n")
+BUILTIN(__builtin_cgp1_read_pixel, "iii", "n")
+BUILTIN(__builtin_cgp1_swap_buffers, "v", "n")
+BUILTIN(__builtin_cgp1_set_blend_mode, "vi", "n")
+
+// Texture operations
+BUILTIN(__builtin_cgp1_bind_texture, "vi", "n")
+BUILTIN(__builtin_cgp1_tex2d, "iff", "n")
+BUILTIN(__builtin_cgp1_texcoord2f, "vff", "n")
+
+// Matrix operations
+BUILTIN(__builtin_cgp1_load_identity, "v", "n")
+BUILTIN(__builtin_cgp1_translate, "vfff", "n")
+BUILTIN(__builtin_cgp1_scale, "vfff", "n")
+BUILTIN(__builtin_cgp1_rotate_z, "vf", "n")
+
+#undef BUILTIN

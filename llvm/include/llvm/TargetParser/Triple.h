@@ -69,7 +69,7 @@ public:
     mips64el,       // MIPS64EL: mips64el, mips64r6el, mipsn32el, mipsn32r6el
     msp430,         // MSP430: msp430
     //@s triple1
-    mipsnova,       // MipsNova: basically same as mips
+    cgp1,           // CGP1: CGP1 backend (32-bit big endian)
     //- triple1
     ppc,            // PPC: powerpc
     ppcle,          // PPCLE: powerpc (little endian)

@@ -58,7 +58,7 @@ StringRef Triple::getArchTypeName(ArchType Kind) {
   case mipsel:         return "mipsel";
 //- another
 //@s get-arch-type-name
-  case mipsnova:       return "mipsnova";
+  case cgp1:           return "cgp1";
 //- get-arch-type-name
   case msp430:         return "msp430";
   case nvptx64:        return "nvptx64";
@@ -447,7 +447,7 @@ Triple::ArchType Triple::getArchTypeForLLVMName(StringRef Name) {
     .Case("mips64", mips64)
     .Case("mips64el", mips64el)
     //@s case-triple
-    .Case("mipsnova", mipsnova)
+    .Case("cgp1", cgp1)
     //- case-triple
     .Case("msp430", msp430)
     .Case("ppc64", ppc64)
@@ -599,7 +599,7 @@ static Triple::ArchType parseArch(StringRef ArchName) {
           .Cases("mipsel", "mipsallegrexel", "mipsisa32r6el", "mipsr6el",
                  Triple::mipsel)
           //@s parse-arch-nova
-          .Case("mipsnova", Triple::mipsnova)
+          .Case("cgp1", Triple::cgp1)
           //- parse-arch-nova
           .Cases("mips64", "mips64eb", "mipsn32", "mipsisa64r6", "mips64r6",
                  "mipsn32r6", Triple::mips64)
@@ -967,7 +967,7 @@ static Triple::ObjectFormatType getDefaultFormat(const Triple &T) {
   case Triple::mips64el:
   case Triple::mips:
   //@s default-format-nova
-  case Triple::mipsnova:
+  case Triple::cgp1:
   //- default-format-nova
   case Triple::msp430:
   case Triple::nvptx64:
@@ -1683,7 +1683,7 @@ unsigned Triple::getArchPointerBitWidth(llvm::Triple::ArchType Arch) {
   case llvm::Triple::mips:
   case llvm::Triple::mipsel:
   //@s 32-bit-nova-ptr
-  case llvm::Triple::mipsnova:
+  case llvm::Triple::cgp1:
   //- 32-bit-nova-ptr
   case llvm::Triple::nvptx:
   case llvm::Triple::ppc:
@@ -1796,7 +1796,7 @@ Triple Triple::get32BitArchVariant() const {
   case Triple::mips:
   case Triple::mipsel:
   //@s 32bit-variant
-  case Triple::mipsnova:
+  case Triple::cgp1:
   //- 32bit-variant
   case Triple::nvptx:
   case Triple::ppc:
@@ -1861,7 +1861,7 @@ Triple Triple::get64BitArchVariant() const {
   case Triple::lanai:
   case Triple::m68k:
   //@s 64bit-variant
-  case Triple::mipsnova:
+  case Triple::cgp1:
   //- 64bit-variant
   case Triple::msp430:
   case Triple::r600:

@@ -49,6 +49,7 @@
 #include "llvm/IR/IntrinsicsAMDGPU.h"
 #include "llvm/IR/IntrinsicsARM.h"
 #include "llvm/IR/IntrinsicsBPF.h"
+#include "llvm/IR/IntrinsicsCGP1.h"
 #include "llvm/IR/IntrinsicsDirectX.h"
 #include "llvm/IR/IntrinsicsHexagon.h"
 #include "llvm/IR/IntrinsicsNVPTX.h"
@@ -6838,6 +6839,8 @@ static Value *EmitTargetArchBuiltinExpr(CodeGenFunction *CGF,
     if (CGF->getTarget().getTriple().getOS() != llvm::Triple::OSType::AMDHSA)
       return nullptr;
     return CGF->EmitAMDGPUBuiltinExpr(BuiltinID, E);
+  case llvm::Triple::cgp1:
+    return CGF->EmitCGP1BuiltinExpr(BuiltinID, E);
   default:
     return nullptr;
   }
@@ -23760,4 +23763,382 @@ Value *CodeGenFunction::EmitRISCVBuiltinExpr(unsigned BuiltinID,
 
   llvm::Function *F = CGM.getIntrinsic(ID, IntrinsicTypes);
   return Builder.CreateCall(F, Ops, "");
+}
+
+//===----------------------------------------------------------------------===//
+// CGP1 GPU Builtin Emission
+//===----------------------------------------------------------------------===//
+
+Value *CodeGenFunction::EmitCGP1BuiltinExpr(unsigned BuiltinID,
+                                            const CallExpr *E) {
+  switch (BuiltinID) {
+  default:
+    return nullptr;
+
+  // Thread indexing
+  case CGP1::BI__builtin_cgp1_thread_id_x: {
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_thread_id_x);
+    return Builder.CreateCall(F);
+  }
+  case CGP1::BI__builtin_cgp1_thread_id_y: {
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_thread_id_y);
+    return Builder.CreateCall(F);
+  }
+  case CGP1::BI__builtin_cgp1_thread_id_z: {
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_thread_id_z);
+    return Builder.CreateCall(F);
+  }
+
+  // Block indexing
+  case CGP1::BI__builtin_cgp1_block_id_x: {
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_block_id_x);
+    return Builder.CreateCall(F);
+  }
+  case CGP1::BI__builtin_cgp1_block_id_y: {
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_block_id_y);
+    return Builder.CreateCall(F);
+  }
+  case CGP1::BI__builtin_cgp1_block_id_z: {
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_block_id_z);
+    return Builder.CreateCall(F);
+  }
+
+  // Block dimensions
+  case CGP1::BI__builtin_cgp1_block_dim_x: {
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_block_dim_x);
+    return Builder.CreateCall(F);
+  }
+  case CGP1::BI__builtin_cgp1_block_dim_y: {
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_block_dim_y);
+    return Builder.CreateCall(F);
+  }
+  case CGP1::BI__builtin_cgp1_block_dim_z: {
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_block_dim_z);
+    return Builder.CreateCall(F);
+  }
+
+  // Grid dimensions
+  case CGP1::BI__builtin_cgp1_grid_dim_x: {
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_grid_dim_x);
+    return Builder.CreateCall(F);
+  }
+  case CGP1::BI__builtin_cgp1_grid_dim_y: {
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_grid_dim_y);
+    return Builder.CreateCall(F);
+  }
+  case CGP1::BI__builtin_cgp1_grid_dim_z: {
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_grid_dim_z);
+    return Builder.CreateCall(F);
+  }
+
+  // Synchronization
+  case CGP1::BI__builtin_cgp1_barrier: {
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_barrier);
+    return Builder.CreateCall(F);
+  }
+
+  // SIMT execution mask (EXEC)
+  case CGP1::BI__builtin_cgp1_exec_get: {
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_exec_get);
+    return Builder.CreateCall(F);
+  }
+  case CGP1::BI__builtin_cgp1_exec_set: {
+    Value *Mask = EmitScalarExpr(E->getArg(0));
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_exec_set);
+    return Builder.CreateCall(F, {Mask});
+  }
+  case CGP1::BI__builtin_cgp1_exec_push: {
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_exec_push);
+    return Builder.CreateCall(F);
+  }
+  case CGP1::BI__builtin_cgp1_exec_pop: {
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_exec_pop);
+    return Builder.CreateCall(F);
+  }
+  case CGP1::BI__builtin_cgp1_exec_and: {
+    Value *Mask = EmitScalarExpr(E->getArg(0));
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_exec_and);
+    return Builder.CreateCall(F, {Mask});
+  }
+
+  // Graphics
+  case CGP1::BI__builtin_cgp1_write_pixel: {
+    Value *X = EmitScalarExpr(E->getArg(0));
+    Value *Y = EmitScalarExpr(E->getArg(1));
+    Value *Color = EmitScalarExpr(E->getArg(2));
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_write_pixel);
+    return Builder.CreateCall(F, {X, Y, Color});
+  }
+  case CGP1::BI__builtin_cgp1_clear_screen: {
+    Value *Color = EmitScalarExpr(E->getArg(0));
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_clear_screen);
+    return Builder.CreateCall(F, {Color});
+  }
+  case CGP1::BI__builtin_cgp1_draw_line: {
+    Value *X0 = EmitScalarExpr(E->getArg(0));
+    Value *Y0 = EmitScalarExpr(E->getArg(1));
+    Value *X1 = EmitScalarExpr(E->getArg(2));
+    Value *Y1 = EmitScalarExpr(E->getArg(3));
+    Value *Color = EmitScalarExpr(E->getArg(4));
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_draw_line);
+    return Builder.CreateCall(F, {X0, Y0, X1, Y1, Color});
+  }
+  case CGP1::BI__builtin_cgp1_draw_triangle: {
+    Value *X0 = EmitScalarExpr(E->getArg(0));
+    Value *Y0 = EmitScalarExpr(E->getArg(1));
+    Value *X1 = EmitScalarExpr(E->getArg(2));
+    Value *Y1 = EmitScalarExpr(E->getArg(3));
+    Value *X2 = EmitScalarExpr(E->getArg(4));
+    Value *Y2 = EmitScalarExpr(E->getArg(5));
+    Value *Color = EmitScalarExpr(E->getArg(6));
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_draw_triangle);
+    return Builder.CreateCall(F, {X0, Y0, X1, Y1, X2, Y2, Color});
+  }
+
+  // Shared memory
+  case CGP1::BI__builtin_cgp1_shared_load: {
+    Value *Addr = EmitScalarExpr(E->getArg(0));
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_shared_load);
+    return Builder.CreateCall(F, {Addr});
+  }
+  case CGP1::BI__builtin_cgp1_shared_store: {
+    Value *Addr = EmitScalarExpr(E->getArg(0));
+    Value *Val = EmitScalarExpr(E->getArg(1));
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_shared_store);
+    return Builder.CreateCall(F, {Addr, Val});
+  }
+
+  // Atomic operations
+  case CGP1::BI__builtin_cgp1_atomic_add: {
+    Value *Addr = EmitScalarExpr(E->getArg(0));
+    Value *Val = EmitScalarExpr(E->getArg(1));
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_atomic_add);
+    return Builder.CreateCall(F, {Addr, Val});
+  }
+  case CGP1::BI__builtin_cgp1_atomic_cas: {
+    Value *Addr = EmitScalarExpr(E->getArg(0));
+    Value *Cmp = EmitScalarExpr(E->getArg(1));
+    Value *Val = EmitScalarExpr(E->getArg(2));
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_atomic_cas);
+    return Builder.CreateCall(F, {Addr, Cmp, Val});
+  }
+  case CGP1::BI__builtin_cgp1_atomic_max: {
+    Value *Addr = EmitScalarExpr(E->getArg(0));
+    Value *Val = EmitScalarExpr(E->getArg(1));
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_atomic_max);
+    return Builder.CreateCall(F, {Addr, Val});
+  }
+  case CGP1::BI__builtin_cgp1_atomic_min: {
+    Value *Addr = EmitScalarExpr(E->getArg(0));
+    Value *Val = EmitScalarExpr(E->getArg(1));
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_atomic_min);
+    return Builder.CreateCall(F, {Addr, Val});
+  }
+  case CGP1::BI__builtin_cgp1_atomic_exch: {
+    Value *Addr = EmitScalarExpr(E->getArg(0));
+    Value *Val = EmitScalarExpr(E->getArg(1));
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_atomic_exch);
+    return Builder.CreateCall(F, {Addr, Val});
+  }
+
+  // Warp-level primitives
+  case CGP1::BI__builtin_cgp1_warp_size: {
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_warp_size);
+    return Builder.CreateCall(F);
+  }
+  case CGP1::BI__builtin_cgp1_lane_id: {
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_lane_id);
+    return Builder.CreateCall(F);
+  }
+  case CGP1::BI__builtin_cgp1_warp_all: {
+    Value *Pred = EmitScalarExpr(E->getArg(0));
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_warp_all);
+    return Builder.CreateCall(F, {Pred});
+  }
+  case CGP1::BI__builtin_cgp1_warp_any: {
+    Value *Pred = EmitScalarExpr(E->getArg(0));
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_warp_any);
+    return Builder.CreateCall(F, {Pred});
+  }
+  case CGP1::BI__builtin_cgp1_warp_ballot: {
+    Value *Pred = EmitScalarExpr(E->getArg(0));
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_warp_ballot);
+    return Builder.CreateCall(F, {Pred});
+  }
+  case CGP1::BI__builtin_cgp1_warp_shuffle: {
+    Value *Val = EmitScalarExpr(E->getArg(0));
+    Value *Lane = EmitScalarExpr(E->getArg(1));
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_warp_shuffle);
+    return Builder.CreateCall(F, {Val, Lane});
+  }
+
+  // Fast math
+  case CGP1::BI__builtin_cgp1_rcp: {
+    Value *X = EmitScalarExpr(E->getArg(0));
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_rcp);
+    return Builder.CreateCall(F, {X});
+  }
+  case CGP1::BI__builtin_cgp1_rsqrt: {
+    Value *X = EmitScalarExpr(E->getArg(0));
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_rsqrt);
+    return Builder.CreateCall(F, {X});
+  }
+  case CGP1::BI__builtin_cgp1_sin: {
+    Value *X = EmitScalarExpr(E->getArg(0));
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_sin);
+    return Builder.CreateCall(F, {X});
+  }
+  case CGP1::BI__builtin_cgp1_cos: {
+    Value *X = EmitScalarExpr(E->getArg(0));
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_cos);
+    return Builder.CreateCall(F, {X});
+  }
+  case CGP1::BI__builtin_cgp1_exp: {
+    Value *X = EmitScalarExpr(E->getArg(0));
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_exp);
+    return Builder.CreateCall(F, {X});
+  }
+  case CGP1::BI__builtin_cgp1_log: {
+    Value *X = EmitScalarExpr(E->getArg(0));
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_log);
+    return Builder.CreateCall(F, {X});
+  }
+
+  // OpenGL-like graphics
+  case CGP1::BI__builtin_cgp1_set_viewport: {
+    Value *X = EmitScalarExpr(E->getArg(0));
+    Value *Y = EmitScalarExpr(E->getArg(1));
+    Value *W = EmitScalarExpr(E->getArg(2));
+    Value *H = EmitScalarExpr(E->getArg(3));
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_set_viewport);
+    return Builder.CreateCall(F, {X, Y, W, H});
+  }
+  case CGP1::BI__builtin_cgp1_set_color: {
+    Value *Color = EmitScalarExpr(E->getArg(0));
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_set_color);
+    return Builder.CreateCall(F, {Color});
+  }
+  case CGP1::BI__builtin_cgp1_set_depth: {
+    Value *Depth = EmitScalarExpr(E->getArg(0));
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_set_depth);
+    return Builder.CreateCall(F, {Depth});
+  }
+  case CGP1::BI__builtin_cgp1_begin: {
+    Value *Mode = EmitScalarExpr(E->getArg(0));
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_begin);
+    return Builder.CreateCall(F, {Mode});
+  }
+  case CGP1::BI__builtin_cgp1_end: {
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_end);
+    return Builder.CreateCall(F);
+  }
+  case CGP1::BI__builtin_cgp1_vertex2i: {
+    Value *X = EmitScalarExpr(E->getArg(0));
+    Value *Y = EmitScalarExpr(E->getArg(1));
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_vertex2i);
+    return Builder.CreateCall(F, {X, Y});
+  }
+  case CGP1::BI__builtin_cgp1_vertex2f: {
+    Value *X = EmitScalarExpr(E->getArg(0));
+    Value *Y = EmitScalarExpr(E->getArg(1));
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_vertex2f);
+    return Builder.CreateCall(F, {X, Y});
+  }
+  case CGP1::BI__builtin_cgp1_vertex3f: {
+    Value *X = EmitScalarExpr(E->getArg(0));
+    Value *Y = EmitScalarExpr(E->getArg(1));
+    Value *Z = EmitScalarExpr(E->getArg(2));
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_vertex3f);
+    return Builder.CreateCall(F, {X, Y, Z});
+  }
+  case CGP1::BI__builtin_cgp1_draw_rect: {
+    Value *X = EmitScalarExpr(E->getArg(0));
+    Value *Y = EmitScalarExpr(E->getArg(1));
+    Value *W = EmitScalarExpr(E->getArg(2));
+    Value *H = EmitScalarExpr(E->getArg(3));
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_draw_rect);
+    return Builder.CreateCall(F, {X, Y, W, H});
+  }
+  case CGP1::BI__builtin_cgp1_fill_rect: {
+    Value *X = EmitScalarExpr(E->getArg(0));
+    Value *Y = EmitScalarExpr(E->getArg(1));
+    Value *W = EmitScalarExpr(E->getArg(2));
+    Value *H = EmitScalarExpr(E->getArg(3));
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_fill_rect);
+    return Builder.CreateCall(F, {X, Y, W, H});
+  }
+  case CGP1::BI__builtin_cgp1_draw_circle: {
+    Value *CX = EmitScalarExpr(E->getArg(0));
+    Value *CY = EmitScalarExpr(E->getArg(1));
+    Value *R = EmitScalarExpr(E->getArg(2));
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_draw_circle);
+    return Builder.CreateCall(F, {CX, CY, R});
+  }
+  case CGP1::BI__builtin_cgp1_fill_circle: {
+    Value *CX = EmitScalarExpr(E->getArg(0));
+    Value *CY = EmitScalarExpr(E->getArg(1));
+    Value *R = EmitScalarExpr(E->getArg(2));
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_fill_circle);
+    return Builder.CreateCall(F, {CX, CY, R});
+  }
+  case CGP1::BI__builtin_cgp1_read_pixel: {
+    Value *X = EmitScalarExpr(E->getArg(0));
+    Value *Y = EmitScalarExpr(E->getArg(1));
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_read_pixel);
+    return Builder.CreateCall(F, {X, Y});
+  }
+  case CGP1::BI__builtin_cgp1_swap_buffers: {
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_swap_buffers);
+    return Builder.CreateCall(F);
+  }
+  case CGP1::BI__builtin_cgp1_set_blend_mode: {
+    Value *Mode = EmitScalarExpr(E->getArg(0));
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_set_blend_mode);
+    return Builder.CreateCall(F, {Mode});
+  }
+
+  // Texture operations
+  case CGP1::BI__builtin_cgp1_bind_texture: {
+    Value *TexID = EmitScalarExpr(E->getArg(0));
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_bind_texture);
+    return Builder.CreateCall(F, {TexID});
+  }
+  case CGP1::BI__builtin_cgp1_tex2d: {
+    Value *U = EmitScalarExpr(E->getArg(0));
+    Value *V = EmitScalarExpr(E->getArg(1));
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_tex2d);
+    return Builder.CreateCall(F, {U, V});
+  }
+  case CGP1::BI__builtin_cgp1_texcoord2f: {
+    Value *U = EmitScalarExpr(E->getArg(0));
+    Value *V = EmitScalarExpr(E->getArg(1));
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_texcoord2f);
+    return Builder.CreateCall(F, {U, V});
+  }
+
+  // Matrix operations
+  case CGP1::BI__builtin_cgp1_load_identity: {
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_load_identity);
+    return Builder.CreateCall(F);
+  }
+  case CGP1::BI__builtin_cgp1_translate: {
+    Value *X = EmitScalarExpr(E->getArg(0));
+    Value *Y = EmitScalarExpr(E->getArg(1));
+    Value *Z = EmitScalarExpr(E->getArg(2));
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_translate);
+    return Builder.CreateCall(F, {X, Y, Z});
+  }
+  case CGP1::BI__builtin_cgp1_scale: {
+    Value *X = EmitScalarExpr(E->getArg(0));
+    Value *Y = EmitScalarExpr(E->getArg(1));
+    Value *Z = EmitScalarExpr(E->getArg(2));
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_scale);
+    return Builder.CreateCall(F, {X, Y, Z});
+  }
+  case CGP1::BI__builtin_cgp1_rotate_z: {
+    Value *Angle = EmitScalarExpr(E->getArg(0));
+    llvm::Function *F = CGM.getIntrinsic(Intrinsic::cgp1_rotate_z);
+    return Builder.CreateCall(F, {Angle});
+  }
+  }
 }

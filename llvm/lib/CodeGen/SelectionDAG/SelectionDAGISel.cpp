@@ -3419,8 +3419,7 @@ void SelectionDAGISel::SelectCodeCommon(SDNode *NodeToMatch,
         bool Result;
         MatcherIndex = IsPredicateKnownToFail(MatcherTable, MatcherIndex, N,
                                               Result, *this, RecordedNodes);
-        llvm::dbgs() << "  Is Predicate known to fail: "
-                     << Result << "\n";
+        LLVM_DEBUG(dbgs() << "  Is Predicate known to fail: " << Result << "\n");
         if (!Result)
           break;
 
